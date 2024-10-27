@@ -1,0 +1,97 @@
+// Count Square Submatrices with All Ones
+
+Intuition and Approach:
+The problem is to count the number of square submatrices that have all 1s in a given binary matrix. The idea is to use dynamic programming (DP) to solve this efficiently.
+
+Recursive Approach:
+We define a helper function that tries to determine the largest square submatrix that can be formed with a 1 at position (i, j).
+If the matrix at (i, j) is 0, it means no square can start from here, so we return 0.
+Otherwise, we recursively check three possible directions:
+Right (i, j + 1)
+Diagonally right-down (i + 1, j + 1)
+Down (i + 1, j)
+The value at dp[i][j] will be 1 plus the minimum of the results from these three recursive calls. This is because a square submatrix can only be extended if all three directions can also form squares.
+Memoization:
+
+To avoid recalculating the size of squares starting at (i, j), we use a 2D DP array dp where dp[i][j] stores the maximum size of the square submatrix ending at (i, j).
+If dp[i][j] is already calculated (not equal to -1), we directly use it to avoid redundant calculations.
+
+Counting Squares:
+For each cell (i, j) in the matrix, if it contains 1, we use the helper function to determine the largest square ending there and add that value to the answer.
+Complexity Analysis:
+
+Time Complexity:
+The recursive approach could lead to O(3^(m*n)) in the worst case, but with memoization, the time complexity is reduced to O(m * n).
+Each cell (i, j) is processed once, and each recursive call checks at most three directions. Since there are m * n cells, the total time complexity is O(m * n).
+
+Space Complexity:
+The space complexity mainly consists of the dp array, which takes O(m * n).
+Additionally, there is space used by the recursion stack, which could go up to O(m + n) in the worst case if the recursion goes deep.
+Thus, the overall space complexity is O(m * n).
+
+//code (Top Down Approach)
+
+class Solution {
+public:
+    int helper(vector<vector<int>>& matrix,int i,int j,int m,int n,vector<vector<int>>& dp)
+    {
+        if(i<0||i>=m||j<0||j>=n)
+            return 0;
+        if(dp[i][j]!=-1)
+            return dp[i][j];
+        if(matrix[i][j]==0)
+            return dp[i][j]=0;
+        int right=helper(matrix,i,j+1,m,n,dp);
+        int diagonal=helper(matrix,i+1,j+1,m,n,dp);
+        int down=helper(matrix,i+1,j,m,n,dp);
+        return dp[i][j]=1+min(right,min(diagonal,down));
+    }
+    int countSquares(vector<vector<int>>& matrix) {
+        int ans=0;
+        int m=matrix.size();
+        int n=matrix[0].size();
+        vector<vector<int>> dp(m+1,vector<int>(n+1,-1));
+        for(int i=0;i<m;i++)
+        {
+            for(int j=0;j<n;j++)
+            {
+                if(matrix[i][j]==1)
+                {
+                    ans+=helper(matrix,i,j,m,n,dp);
+                }
+            }
+        }
+        return ans;
+    }
+};
+
+
+//code (Bottom Up Approach)
+
+class Solution {
+public:
+    int countSquares(vector<vector<int>>& matrix) {
+        if(matrix.size() == 0)
+            return 0;
+        int m = matrix.size();
+        int n = matrix[0].size();
+        
+        vector<vector<int>> t(m, vector<int>(n, 0));
+        int result = 0;
+
+        for(int i = 0; i < m; i++) {
+            for(int j = 0; j < n; j++) {
+                if(i == 0 || j == 0) {
+                    t[i][j] = matrix[i][j];
+                } else {
+                    if(matrix[i][j] == 1) {
+                        t[i][j] = 1 + min({t[i-1][j], t[i][j-1], t[i-1][j-1]});
+                    }
+                }
+                result += t[i][j];
+            }
+        }
+        
+        return result;
+    }
+};

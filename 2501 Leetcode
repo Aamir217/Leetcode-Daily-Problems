@@ -1,0 +1,128 @@
+// Using Hash Table 
+
+Intuition
+The goal of the problem is to find the longest "square streak" in an array, where a square streak is defined as a sequence of numbers such that each element is the square of the previous one. For example, if the input contains 1, 2, 4, 16, then 2, 4, 16 is a valid square streak because
+4=2*2 and 16=4*4.
+
+The main idea is to leverage sorting and a map to track how long each streak can be. By processing elements in ascending order, we can efficiently determine if a number continues a streak from an earlier number (which must be the square root).
+
+Approach
+Sort the Input Array:
+
+Sort the array to ensure that we process numbers in ascending order. This helps to build streaks starting from the smallest element upwards.
+
+Use a Map to Track Streak Lengths:
+Use an unordered map mp to store the length of the streak for each number.
+For each element nums[i], check if it's a perfect square by calculating its integer square root.
+If root * root equals nums[i] and root is already in mp, it means nums[i] can extend the streak from root. Update mp[nums[i]] to be mp[root] + 1.
+Otherwise, start a new streak by setting mp[nums[i]] = 1.
+
+Track the Longest Streak:
+Update a variable ans to keep track of the maximum streak length found.
+If no streak has a length greater than 1, return -1 (indicating no valid streak found).
+
+Complexity
+Time complexity:
+Sorting the array takes O(nlogn).
+Processing each element in the array takes O(n), where we check for roots and perform map operations that average to O(1).
+
+Overall:
+O(nlogn)+O(n)=O(nlogn).
+
+Space complexity:
+The space complexity is O(n) due to the unordered map mp that can potentially store up to n elements.
+
+//code
+class Solution {
+public:
+    int longestSquareStreak(vector<int>& nums) {
+        unordered_map<int,int> mp;
+        int n=nums.size();
+        sort(nums.begin(),nums.end());
+        int ans=0;
+        for(int i=0;i<n;i++)
+        {
+            int root=(int)sqrt(nums[i]);
+            if(root*root==nums[i]&&mp.find(root)!=mp.end())
+            {
+                mp[nums[i]]=mp[root]+1;
+            }
+            else
+            {
+                mp[nums[i]]=1;
+            }
+            ans=max(ans,mp[nums[i]]);
+        }
+        if(ans<2)
+            return -1;
+        else
+            return ans;
+    }
+};
+
+
+//Using Dynamic Programming
+
+Intuition:
+The problem requires finding the longest "square streak" in an array, where each element in the streak is the square of the previous one. Instead of using dynamic programming or maps, this approach leverages a set to quickly check if a number exists in the array, which simplifies the process of determining streaks.
+
+The idea is to use each element as a starting point and check if the squares of that element also exist in the set, thereby forming a streak. The approach is efficient since it avoids unnecessary recomputation by directly searching for the square of each number.
+
+Approach:
+Store All Elements in a Set:
+First, insert all the elements of the array into an unordered set st. This allows for O(1) average time complexity for lookups.
+This helps in quickly checking whether the square of a current number exists in the array.
+
+Iterate Through the Array:
+For each number num in the array, initialize a variable streak to count the length of the current square streak.
+Use currNumber to track the current element in the streak, starting with num.
+Continue squaring currNumber and check if it exists in the set.
+Stop if:
+The squared value does not exist in the set.
+The squared value exceeds 1e5 (a condition to prevent overflow and excessive computation).
+
+Track the Maximum Streak:
+After processing each number, update maxStreak if the current streak is the longest found so far.
+If no valid streak greater than 1 is found, return -1.
+
+Complexity Analysis:
+Time Complexity:
+Inserting elements into the set takes O(n).
+For each element num, the approach checks how far the streak can go. Each lookup in the set is O(1) on average.
+In the worst case, each number may be squared multiple times, but the actual number of squares is limited by the constraints, leading to at most logarithmic growth.
+
+Overall complexity is approximately 
+O(n⋅logM), where M is the value of the largest number squared, which is manageable due to the conditions set on currNumber.
+
+Space Complexity:
+The primary space usage comes from the unordered set st, which stores up to n elements, making the space complexity O(n).
+
+//code
+
+class Solution {
+public:
+    int longestSquareStreak(vector<int>& nums) {
+        unordered_set<int> st;
+        for(auto &num:nums)
+        {
+            st.insert(num);
+        }
+        int maxStreak=0;
+        for(auto &num:nums)
+        {
+            int streak=0;
+            long long currNumber=num;
+            while(st.find(currNumber)!=st.end())
+            {
+                streak+=1;
+                if(currNumber*currNumber>1e5)
+                {
+                    break;
+                }
+                currNumber*=currNumber;
+            }
+            maxStreak=max(maxStreak,streak);
+        }
+        return maxStreak<2? -1: maxStreak;
+    }
+};

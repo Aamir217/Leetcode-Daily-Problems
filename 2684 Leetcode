@@ -1,0 +1,67 @@
+//Maximum Number of Moves in a Grid
+
+Problem Intuition
+The problem typically involves finding the longest increasing path in a grid, where you can only move to the right (to the next column) or downward in subsequent rows if the value at the new position is greater than the current position. The goal is to maximize the number of such valid moves.
+
+Approach
+DFS with Memoization:
+We use a DFS function (DFS) to explore potential paths starting from each cell in the first column (leftmost).
+We maintain a memoization table (dp) to store the results of subproblems. If dp[i][j] is already calculated (i.e., not equal to -1), we return the stored result to avoid redundant calculations.
+
+Direction Vectors:
+The directions vector contains possible moves. The current implementation suggests that we only want to explore moving down and right.
+
+Recursive Exploration:
+For each cell (i, j), we explore moving to the next column (j+1) for each valid row index (from i-1 to i+1), ensuring that the new cell value is greater than the current cell value.
+We recursively call DFS on valid positions to count the maximum moves possible from those positions.
+
+Main Function:
+In maxMoves, we iterate through each row of the first column and initiate a DFS from that position, keeping track of the maximum number of moves encountered.
+
+Complexity Analysis
+Time Complexity:
+In the worst case, each cell in the grid is visited once, and for each visit, we check at most three adjacent cells. Thus, the time complexity can be approximated as:
+O(m×n) where m is the number of rows and n is the number of columns
+Due to memoization, we avoid recalculating the paths for already visited cells.
+
+Space Complexity:
+The space complexity is primarily due to the dp array and the recursion stack. Hence, the space complexity is:
+O(m×n) for the dp array
+The maximum depth of the recursion could go as deep as m (height of the grid) in the worst case, contributing to the space used on the call stack.
+
+//Code
+
+class Solution {
+public:
+    int m,n;
+    vector<int> directions={-1,0,1};
+    int DFS(vector<vector<int>>& grid,int i,int j,vector<vector<int>>& dp)
+    {
+        if(dp[i][j]!=-1)
+        {
+            return dp[i][j];
+        }
+        int moves=0;
+        for(auto &dir:directions)
+        {
+            int new_i=i+dir;
+            int new_j=j+1;
+            if(new_i>=0&&new_i<m&&new_j>=0&&new_j<n&&grid[new_i][new_j]>grid[i][j])
+            {
+                moves=max(moves,1+DFS(grid,new_i,new_j,dp));
+            }
+        }
+        return dp[i][j]=moves;
+    }
+    int maxMoves(vector<vector<int>>& grid) {
+        m=grid.size();
+        n=grid[0].size();
+        int maxMoves=0;
+        vector<vector<int>> dp(m,vector<int>(n,-1));
+        for(int i=0;i<m;i++)
+        {
+            maxMoves=max(maxMoves,DFS(grid,i,0,dp));
+        }
+        return maxMoves;
+    }
+};

@@ -1,0 +1,34 @@
+// Circular Sentence
+
+Intuition
+Circular Nature of Words: We want each word to smoothly connect to the next, which means the last character of each word should be the same as the first character of the next word.
+Edge Condition (First and Last Character): For a truly circular sentence, the last character of the last word should match the first character of the first word.
+
+Approach
+Loop through the sentence: Traverse the sentence character by character.
+If we encounter a space ' ', check if the last character of the current word (which is sentence[i-1]) is the same as the first character of the next word (sentence[i+1]).
+If they do not match, return false, since the sentence is not circular at this point.
+End Condition: Once the loop is complete, check if the sentence’s first and last characters are the same. If they are, return true, as it satisfies the circular condition; otherwise, return false.
+
+Complexity
+Time Complexity: 
+O(n), where 
+n is the length of the sentence. This is because we traverse each character of the sentence once.
+Space Complexity: 
+O(1), as we use only a constant amount of extra space regardless of the sentence size.
+
+// Code
+
+class Solution {
+public:
+    bool isCircularSentence(string sentence) {
+       for(int i=0;i<sentence.length();i++)
+       {
+            if(sentence[i]==' '&&sentence[i-1]!=sentence[i+1])
+            {
+                return false;
+            }
+       }
+       return sentence[0]==sentence[sentence.length()-1];
+    }
+};

@@ -1,0 +1,49 @@
+// String Compression III
+
+Intuition
+The main idea is to reduce the length of a string by grouping consecutive identical characters and representing each group with the character count followed by the character itself. This compression approach is commonly used in "run-length encoding," and the function has a constraint to count a maximum of 9 consecutive identical characters for each group.
+
+Approach
+Initialization:
+Initialize an empty string ans to store the compressed result.
+Use a pointer i to iterate through the input string word.
+
+Loop through the string:
+For each character ch = word[i], count consecutive occurrences of ch while i remains within the bounds of word and the count doesn’t exceed 9.
+Increment the count and i each time the same character is encountered up to a maximum of 9.
+
+Build the compressed string:
+After counting consecutive occurrences of a character, append the count (as a string) followed by the character itself to ans.
+
+Return result:
+The function finally returns ans which holds the compressed string.
+
+Complexity Analysis
+Time Complexity:
+The function iterates through each character of the string word exactly once, making this approach O(n), where n is the length of word.
+
+Space Complexity:
+The space complexity is O(n) because, in the worst case, if each character is unique or occurs only once, the compressed form could still be nearly as long as the original string
+
+//Code
+
+class Solution {
+public:
+    string compressedString(string word) {
+        int n=word.size();
+        int i=0;
+        string ans="";
+        while(i<n)
+        {
+            int count=0;
+            char ch=word[i];
+            while(i<n&&count<9&&word[i]==ch)
+            {
+                count++;
+                i++;
+            }
+            ans+=to_string(count)+ch;
+        }
+        return ans;
+    }
+};

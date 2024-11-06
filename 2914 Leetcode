@@ -1,0 +1,59 @@
+//Minimum Number of Changes to Make Binary String Beautiful
+
+Intuition
+The goal is to determine the minimum number of changes required to ensure that each contiguous sequence of identical characters has an even length. For example, "aaabb" should become "aabb" or "aaabbb" with the minimum changes. The function works by checking each contiguous block of characters in the string and adjusting the number of changes needed if a block has an odd length.
+
+Approach
+Initialize Variables: 
+We start with a change counter to keep track of the number of changes required, and count to count the consecutive characters of the same type.
+
+Loop through the String:
+For each character in the string:
+  If it's the same as the previous character (ch), increase the count.
+  If it's different:
+
+Check if the previous count (block length) is odd. If so, increment change by 1 because we need to make it even.
+
+Reset count to 1 for the new character block and update ch.
+
+Final Check: At the end of the loop, check if the last character block has an odd length. If it does, increment change.
+
+Return Result: Return change as the minimum number of changes needed.
+
+Complexity Analysis
+Time Complexity: 
+O(n), where n is the length of the string, as we iterate through each character once.
+
+Space Complexity: 
+O(1), as we only use a few variables for counting and tracking changes.
+
+// Code
+
+class Solution {
+public:
+    int minChanges(string s) {
+        int change=0;
+        int n=s.length();
+        char ch=s[0];
+        int count=0;
+        for(int i=0;i<n;i++)
+        {
+            if(s[i]==ch)
+            {
+                count++;
+                continue;
+            }
+            if(count%2!=0)
+            {
+                change+=1;
+                count=0;
+            }
+            else
+            {
+                count=1;
+            }
+            ch=s[i];
+        }
+        return change;
+    }
+};

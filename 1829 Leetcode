@@ -1,0 +1,68 @@
+// Maximum XOR for Each Query
+
+Intuition:
+XOR Properties:
+The XOR operation is central to this problem. XOR has the properties that:
+x⊕x=0
+x⊕0=x
+XORing a number with a mask that has all bits set (like 111...1 up to the maximumBit length) flips all its bits, giving the maximum possible XOR within the specified bit length.
+
+Objective:
+For each prefix of nums, calculate the XOR of all elements up to that index.
+Then, find the maximum XOR by flipping all bits (using a bitmask of pow(2,maximumBit)−1 for each cumulative XOR value, which achieves the maximum XOR for the given bit constraint.
+
+Approach:
+Cumulative XOR Calculation:
+Traverse the array nums and calculate the cumulative XOR up to each index. This is stored in arrayXor, where arrayXor[i] represents the XOR of elements from the beginning up to index i.
+If arrayXor[i] is the XOR of the elements up to index i, it can be represented as:
+arrayXor[i]=nums[0]⊕nums[1]⊕…⊕nums[i]
+
+Calculate Maximum XOR:
+After calculating the cumulative XORs, find the maximum XOR possible for each value in arrayXor by XORing with valueXor = 2^{\text{maximumBit}} - 1.
+valueXor is essentially a bitmask with all bits set up to maximumBit, which will flip each bit in arrayXor[i] to get the maximum possible XOR value.
+
+Reverse the Order:
+Since we want the result in reverse order, the last cumulative XOR becomes the first in the result, and so on. This is achieved by swapping elements from the start and end in arrayXor.
+
+Return the Result:
+The final arrayXor now contains the desired maximum XOR values in the correct order.
+
+Complexity Analysis:
+Time Complexity:
+Calculating the cumulative XOR takes O(n), where n is the length of nums.
+Flipping the bits with valueXor for each element also takes O(n).
+Reversing the array also takes O(n).
+Overall, the time complexity is O(n).
+
+Space Complexity:
+The solution uses an auxiliary array arrayXor of size n, so the space complexity is O(n).
+
+//Code
+
+class Solution {
+public:
+    vector<int> getMaximumXor(vector<int>& nums, int maximumBit) {
+        int n=nums.size();
+        vector<int> arrayXor(n,0);
+        arrayXor[0]=nums[0];
+        for(int i=1;i<n;i++)
+        {
+            arrayXor[i]=nums[i]^arrayXor[i-1];
+        }
+        int valueXor=pow(2,maximumBit)-1;
+        for(int i=0;i<n;i++)
+        {
+            arrayXor[i]^=valueXor;
+        }
+        int i=0,j=n-1;
+        while(i<j)
+        {
+            int temp=arrayXor[i];
+            arrayXor[i]=arrayXor[j];
+            arrayXor[j]=temp;
+            i++;
+            j--;
+        }
+        return arrayXor;
+    }
+};

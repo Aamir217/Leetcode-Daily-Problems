@@ -1,0 +1,56 @@
+//  Count the Number of Fair Pairs
+
+Problem Intuition
+The goal is to find pairs (i, j) in an array nums where:i<j, meaning i should come before j in the array.
+The sum of the pair, nums[i] + nums[j], falls within a given range [lower, upper].
+The idea is to count all valid pairs (i, j) such that the sum falls within [lower, upper]. We want to do this efficiently without explicitly checking all pairs.
+
+Approach
+Sorting:
+Start by sorting the array nums. Sorting enables us to leverage binary search to efficiently find valid ranges for sums.
+Once sorted, if we are at position i, then for any valid pair (i, j) with i < j, we only need to consider values of nums[j] where j > i and nums[i] + nums[j] is within [lower, upper].
+
+Binary Search for Bounds:
+For each index i, we want to find the range of indices j (where j>i) such that nums[i] + nums[j] lies in [lower, upper].
+
+We calculate this range using:
+lower_bound to find the smallest j where nums[j] >= lower - nums[i]
+upper_bound to find the first j where nums[j] > upper - nums[i]
+The difference between these indices gives the count of valid j indices for that particular i.
+
+Counting Pairs:
+For each i, compute the range of valid j indices using the above steps and add the count to the total.
+This way, instead of looping through every possible pair, we’re using binary search to efficiently find the range of valid pairs for each i.
+
+Complexity Analysis
+Time Complexity:
+Sorting the array takes 
+O(nlogn).
+For each element i (total n iterations), we perform lower_bound and upper_bound operations, which each take 
+O(logn) due to binary search.
+Therefore, the total complexity is 
+O(nlogn)+O(n⋅logn)=O(nlogn).
+
+Space Complexity:
+The solution primarily uses in-place operations, so the space complexity is 
+O(1), ignoring the input size.
+
+// Code
+
+class Solution {
+public:
+    long long countFairPairs(vector<int>& nums, int lower, int upper) {
+        long long count=0;
+        int n=nums.size();
+        sort(begin(nums),end(nums));
+        for(int i=0;i<n;i++)
+        {
+            int idx=lower_bound(nums.begin()+i+1,nums.end(),lower-nums[i])-nums.begin();
+            int x=idx-1-i;
+            idx=upper_bound(nums.begin()+i+1,nums.end(),upper-nums[i])-nums.begin();
+            int y=idx-1-i;
+            count += (y-x);
+        }
+        return count;
+    }
+};

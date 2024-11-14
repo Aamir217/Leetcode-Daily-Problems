@@ -1,0 +1,75 @@
+// Minimized Maximum of Products Distributed to Any Store
+
+Intuition
+Goal: Distribute quantities so that no store receives more than mid items, where mid is the hypothesized maximum items any store should get.
+
+Binary Search on Maximum Items (mid):
+Since we're looking to minimize the maximum number each store receives, binary search is a natural choice to optimize this "maximum items per store."
+We start with a range for mid from 1 to the maximum quantity in quantities.
+
+Feasibility Check:
+For a given mid, we check if it's feasible to distribute the items so that each store receives at most mid items.
+This is done by dividing each quantity by mid and seeing if we have enough stores (n stores) to meet the requirement.
+
+Approach
+Binary Search Setup:
+Initialize l (left) to 1 (the minimum possible maximum) and r (right) to the maximum element in quantities (the maximum possible maximum).
+Use mid = (l + r) / 2 as the midpoint of our binary search.
+
+Feasibility Check Function (possibleToDistribute):
+For each quantity, compute how many stores are needed if each store is limited to receiving at most mid items.
+The number of stores required for each quantity is (quantity + mid - 1) / mid, which essentially computes the ceiling of quantity / mid.
+Accumulate this store count and check if it exceeds n. If it does, mid is too small, and we return false. Otherwise, return true.
+
+Binary Search Execution:
+If possibleToDistribute(mid, quantities, n) returns true, it means mid could be a valid maximum per store, so we set res = mid and try for a smaller mid by setting r = mid - 1.
+Otherwise, if it's not possible, increment l = mid + 1 to try a larger mid.
+
+Return the Result:
+Once the binary search completes, res holds the minimized maximum value of items any store will receive.
+
+Complexity
+Time Complexity:
+Binary search on mid has a complexity of 
+O(log(max(quantities))).
+For each binary search iteration, we check if the distribution is possible, which takes O(m) time, where m is the size of quantities.
+Total time complexity is therefore 
+O(mlog(max(quantities))).
+
+Space Complexity:
+O(1), as we only use a fixed amount of extra space for variables.
+
+// Code 
+
+class Solution {
+public:
+    bool possibleToDistribute(int mid,vector<int>& quantities,int n)
+    {
+        for(int i=0;i<quantities.size();i++)
+        {
+            n-=(quantities[i]+mid-1)/mid;
+            if(n<0)
+                return false;
+        }
+        return true;
+    }
+    int minimizedMaximum(int n, vector<int>& quantities) {
+        int res=0;
+        int l=1;
+        int r=*max_element(begin(quantities),end(quantities));
+        while(l<=r)
+        {
+            int mid=l+(r-l)/2;
+            if(possibleToDistribute(mid,quantities,n))
+            {
+                res=mid;
+                r=mid-1;
+            }
+            else
+            {
+                l=mid+1;
+            }
+        }
+        return res;
+    }
+};

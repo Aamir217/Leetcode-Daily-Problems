@@ -1,0 +1,62 @@
+//Maximum Score After Splitting a String
+
+Intuition and Approach
+The goal is to split the string s into two non-empty parts such that the sum of the number of zeros in the left part and ones in the right part is maximized.
+
+Counting Zeros and Ones:
+First, count the total number of zeros in the string. This will help in efficiently updating the counts as we iterate through the string.
+
+Iterate and Compute Maximum Score:
+As you iterate through the string, maintain two variables:
+count: The number of zeros in the left part.
+count_zero: The number of remaining zeros in the right part.
+
+At each index i (excluding the last character to ensure non-empty right part):
+Update the left count (count) or decrease the right count (count_zero) depending on whether the current character is '0'.
+
+Calculate the current score as:
+score=count+(number of ones in the right part)
+The number of ones in the right part is n−i−1−count_zero.
+Update the result with the maximum score observed.
+
+Return the Maximum Score:
+After iterating, return the maximum score obtained.
+
+Complexity Analysis
+Time Complexity:
+The initial loop to count zeros runs in O(n).
+The second loop to compute the scores also runs in O(n).
+Hence, the overall time complexity is O(n).
+
+Space Complexity:
+
+The algorithm uses a constant amount of extra space for variables (count, count_zero, etc.).
+Hence, the space complexity is O(1)
+
+
+//Code
+
+class Solution {
+public:
+    int maxScore(string s) {
+        int n=s.length();
+        int count_zero=0;
+        int count=0;
+        int result=0;
+        for(auto &ch:s)
+        {
+            if(ch=='0')
+                count_zero++;
+        }
+        for(int i=0;i<n-1;i++)
+        {
+            if(s[i]=='0')
+            {
+                count++;
+                count_zero--;
+            }
+            result=max(result,count+(n-i-1-count_zero));
+        }
+        return result;
+    }
+};

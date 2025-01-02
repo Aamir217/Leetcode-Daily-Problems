@@ -1,0 +1,86 @@
+//Count Vowel Strings in Ranges
+
+Intuition:
+The problem requires checking whether both the first and last characters of words are vowels. Given a list of queries asking for the count of such "vowel strings" within specific ranges, we need an efficient way to handle potentially overlapping queries.
+
+Key observation: 
+If we preprocess the data using a prefix sum array, we can quickly compute the number of valid strings in any range [l, r] by performing constant-time subtraction operations.
+
+Approach:
+Check Vowel Strings:
+Define a helper function, check_vowel, to check if a word starts and ends with a vowel. This function returns true if both conditions are satisfied, else false.
+
+Mark Valid Strings:
+Create a validString array where each element is 1 if the corresponding word satisfies the vowel condition, otherwise 0.
+
+Prefix Sum Array:
+Construct a prefix sum array from validString. At each index i, the value in the prefix sum array represents the total number of valid strings from the start of the list up to index i.
+
+Process Queries:
+For each query [l, r]:
+If l == 0, return the prefix sum at r.
+Otherwise, subtract the prefix sum at l-1 from the prefix sum at r to get the count of valid strings in the range [l, r].
+
+Return Results:
+Return the results for all queries in a single output vector.
+
+Complexity:
+
+Time Complexity:
+Building validString: O(n), where n is the number of words.
+Building Prefix Sum Array: O(n).
+Processing Queries: O(q), where q is the number of queries.
+Overall: O(n+q).
+
+Space Complexity:
+validString Array: O(n).
+Prefix Sum Array: O(n).
+Output Array: O(q).
+Overall: O(n+q).
+
+Intuition + Optimization Recap:
+Using a prefix sum array allows us to reduce the cost of each query to O(1), avoiding the need to iterate over subranges repeatedly.
+This approach balances preprocessing time and query efficiency, making it ideal for scenarios where the list of words is large, and multiple range-based queries are performed.
+
+// CODE
+
+class Solution {
+public:
+    bool check_vowel(string s)
+    {
+        if(s[0]=='a'||s[0]=='e'||s[0]=='i'||s[0]=='o'||s[0]=='u')
+        {
+            if(s[s.length()-1]=='a'||s[s.length()-1]=='e'||s[s.length()-1]=='i'||s[s.length()-1]=='o'||s[s.length()-1]=='u')
+                return true;
+        }
+        return false;
+    }
+    vector<int> vowelStrings(vector<string>& words, vector<vector<int>>& queries) {
+       vector<int> res;
+       vector<int> validString(words.size());
+        for(int i=0;i<words.size();i++)
+        {
+            if(check_vowel(words[i]))
+            {
+                validString[i]=1;
+            }
+        }
+        for(int i=1;i<validString.size();i++)
+        {
+            validString[i]+=validString[i-1];
+        }
+        for(int i=0;i<queries.size();i++)
+        {
+            if(queries[i][0]==0)
+            {
+                res.push_back(validString[queries[i][1]]);
+            }
+            else
+            {
+                res.push_back(validString[queries[i][1]]-validString[queries[i][0]-1]);
+            }
+            
+        }
+        return res;
+    }
+};

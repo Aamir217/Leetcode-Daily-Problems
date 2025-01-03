@@ -1,0 +1,58 @@
+// Number of Ways to Split Array
+
+Intuition
+The problem requires determining how many ways we can split the array into two non-empty parts such that the sum of the left part is greater than or equal to the sum of the right part.
+
+Approach
+Precompute the Total Sum:
+Start by calculating the total sum of all elements in the array (rightSum), which initially contains the sum of the entire array.
+
+Iterate and Update Sums:
+Traverse the array, one element at a time.
+For each split at index i, update the leftSum by adding the current element and decrease the rightSum by the same element. This simulates "moving" the element from the right part to the left part.
+
+Check Validity:
+For each split point (excluding the last element, since the right part must be non-empty), check if the leftSum is greater than or equal to the rightSum. If true, increment the count of valid splits.
+
+Return Result:
+Return the final count of valid splits.
+
+Complexity Analysis
+Time Complexity:
+Calculating the total sum takes O(n), where n is the size of the array.
+The single traversal of the array to update leftSum and rightSum and check conditions also takes O(n).
+Overall, the time complexity is O(n).
+
+Space Complexity:
+We use only a few variables (leftSum, rightSum, and count), which require O(1) space.
+Thus, the space complexity is O(1).
+
+// CODE
+
+class Solution {
+public:
+    int waysToSplitArray(vector<int>& nums) {
+        // Keep track of sum of elements on left and right sides
+        long long leftSum = 0, rightSum = 0;
+
+        // Initially all elements are on right side
+        for (int num : nums) {
+            rightSum += num;
+        }
+
+        int count = 0;
+        // Try each possible split position
+        for (int i = 0; i < nums.size() - 1; i++) {
+            // Move current element from right to left side
+            leftSum += nums[i];
+            rightSum -= nums[i];
+
+            // Check if this creates a valid split
+            if (leftSum >= rightSum) {
+                count++;
+            }
+        }
+
+        return count;
+    }
+};

@@ -1,0 +1,83 @@
+// Unique Length-3 Palindromic Subsequences
+
+Intuition
+The function seeks to exploit the structure of palindromes:
+A palindromic sequence of length 3, such as "aba", must have the same character at the first and third positions, and a different character at the middle position.
+By identifying all unique characters in the string, we can reduce redundant computations and focus on valid boundaries for potential palindromic subsequences.
+By focusing on each unique character as the boundary characters of a palindrome, we can efficiently count the possible middle characters that form a valid palindromic sequence.
+
+Approach
+The goal of the function is to count the number of unique palindromic subsequences of length 3 in a given string s.
+
+Identify All Unique Characters:
+First, we use an unordered set (letters) to collect all unique characters in the string.
+
+Iterate Through Each Unique Character:
+For each unique character, we determine its leftmost and rightmost occurrence in the string.
+This helps define the boundaries within which any valid palindromic subsequences can exist with the current character as both the first and last character.
+
+Count Unique Characters in the Middle:
+Between the leftmost and rightmost indices, collect all unique characters. Each unique character in this range can form a palindromic subsequence with the current character.
+
+Add to Result:
+The size of the set of unique characters in the middle is added to the result.
+
+Return Total Count:
+After processing all unique characters, the total count of palindromic subsequences is returned.
+
+Complexity Analysis
+Time Complexity:
+Identify Unique Characters:
+Inserting characters into the unordered set letters takes n is the length of the string.
+
+Processing Each Unique Character:
+For each unique character c (let's assume there are k unique characters):
+Finding the leftmost and rightmost occurrences of c takes O(n).
+Iterating through the range between the leftmost and rightmost indices and adding elements to the set st takes O(n) in the worst case.
+The total cost across all k unique characters is O(k⋅n).
+
+Overall:
+Since k (the number of unique characters) is at most 26 for lowercase English letters, the time complexity simplifies to O(26⋅n)=O(n).
+
+Space Complexity:
+The unordered sets (letters and st) can hold up to 26 characters at most, resulting in O(1) space usage.
+The total space complexity is O(1) apart from the input string.
+
+
+//CODE
+
+class Solution {
+public:
+    int countPalindromicSubsequence(string s) {
+       int n=s.length();
+       int res=0;
+       unordered_set<int> letters;
+       for(int i=0;i<n;i++)
+       {
+        letters.insert(s[i]);
+       } 
+       for(auto &ch:letters)
+       {
+        int left_most_index=-1;
+        int right_most_index=-1;
+        for(int i=0;i<n;i++)
+        {
+            if(s[i]==ch)
+            {
+                if(left_most_index==-1)
+                {
+                    left_most_index=i;
+                }
+                right_most_index=i;
+            }
+        }
+        unordered_set<int> st;
+        for(int i=left_most_index+1;i<=right_most_index-1;i++)
+        {
+            st.insert(s[i]);
+        }
+        res+=st.size();
+       }
+       return res;
+    }
+};

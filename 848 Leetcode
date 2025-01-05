@@ -1,0 +1,56 @@
+// Shifting Letters
+
+Intuition
+The problem involves transforming a string based on a series of "shifts" applied to each character in reverse order. Each shift operation is cumulative, meaning the effect of shifting a character applies not just to itself but also to all characters that come before it. This requires a reverse traversal of the string to compute the cumulative shifts efficiently.
+
+The key idea is:
+For every character, you calculate its new position in the alphabet based on the cumulative sum of shifts from its position to the end of the string.
+Modulo 26 is used to ensure the shifts wrap around within the English alphabet.
+
+Approach
+Reverse Traversal:
+Start from the last character of the string and move backward.
+Maintain a running cumulative sum (sum) of the shifts as you iterate backward.
+
+Update Each Character:
+For the current character, calculate its new position by:
+Adding the cumulative shift to its original position.
+Using modulo 26 to ensure the result is within the bounds of the alphabet.
+Convert the new position back to a character and update the string.
+
+Optimization via Cumulative Sum:
+By iterating in reverse and maintaining a single cumulative sum, you avoid recomputing sums repeatedly, making the solution efficient.
+
+Algorithm (Step-by-Step)
+Initialize a variable sum to 0 to store the cumulative shift.
+Traverse the string s in reverse (from the last character to the first).
+
+For each character:
+Add the current shift value to sum.
+Calculate the new position of the character using (current_position + sum) % 26.
+Update the character in the string with the new value.
+Return the updated string.
+
+Complexity Analysis
+Time Complexity:
+The algorithm traverses the string once (O(n)) and computes the cumulative sum and modulo operation for each character, which are constant time operations.
+Therefore, the overall time complexity is O(n), where n is the length of the string.
+
+Space Complexity:
+The algorithm uses a few extra variables (sum and loop indices), making it O(1) in terms of additional space usage.
+
+//CODE
+
+class Solution {
+public:
+    string shiftingLetters(string s, vector<int>& shifts) {
+        long long sum=0;
+        for(long long i=s.length()-1;i>=0;i--)
+        {
+            sum+=shifts[i];
+            long long x=(s[i]-97+sum)%26;
+            s[i]=char(x+97);
+        }
+       return s; 
+    }
+};

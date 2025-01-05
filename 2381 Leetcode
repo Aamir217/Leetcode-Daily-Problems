@@ -1,0 +1,85 @@
+// Shifting Letters II
+
+Intuition
+The problem is to apply multiple shifts on a string s in an efficient way. Each shift affects all characters within a given range ([L, R]) and can be either a left shift (decrease character value) or a right shift (increase character value). Naively processing each range would be slow for large inputs, so the task is optimized using a difference array approach.
+
+The difference array allows us to efficiently propagate and accumulate shifts across the string. Instead of applying shifts directly to every character for each query, we record the impact of each query at the boundaries of the range and compute the cumulative effect at each character afterward.
+
+Approach
+Difference Array Initialization:
+Create a difference array diff of size n (length of the string) initialized to 0. The purpose of diff is to record the increment/decrement effect of each query.
+
+Process Each Query:
+For each shift query [L, R, D]:
+If D == 1, the shift is right (+1), and if D == 0, the shift is left (-1).
+
+Update the difference array:
+Add x to diff[L] to start the shift effect at L.
+Subtract x from diff[R+1] (if R+1 is within bounds) to stop the shift effect after R.
+
+Compute Prefix Sum of diff:
+Iterate through diff to compute cumulative shifts at each position. This gives the net shift effect at each character in the string.
+
+Apply Shifts to the String:
+For each character in s, compute the new shifted character:
+Use modular arithmetic (% 26) to handle wrapping around the alphabet.
+Ensure shifts are non-negative by adding 26 if needed.
+
+Return the Result:
+Update the string s with the shifted characters and return it.
+
+Complexity Analysis
+
+Time Complexity:
+Processing the shift queries: O(Q), where Q is the number of queries.
+Computing the prefix sum: O(n), where n is the length of the string.
+Applying the shifts to the string: O(n).
+Total Time Complexity: O(Q+n).
+
+Space Complexity:
+The difference array diff takes O(n) space.
+Total Space Complexity: O(n).
+
+//CODE
+
+class Solution {
+public:
+    string shiftingLetters(string s, vector<vector<int>>& shifts) {
+        int n=s.length();
+        vector<int> diff(n,0);
+        for(int i=0;i<shifts.size();i++)
+        {
+            int L=shifts[i][0];
+            int R=shifts[i][1];
+            int D=shifts[i][2];
+            int x;
+            if(D==0)
+            {
+                x=-1;
+            }
+            else
+            {
+                x=1;
+            }
+            diff[L]+=x;
+            if(R+1<n)
+            {
+                diff[R+1]-=x;
+            }
+        }
+        for(int i=1;i<diff.size();i++)
+        {
+            diff[i]+=diff[i-1];
+        }
+        for(int i=0;i<n;i++)
+        {
+            int shift=diff[i]%26;
+            if(shift<0)
+            {
+                shift+=26;
+            }
+            s[i]=(((s[i]-'a')+shift)%26)+'a';
+        }
+        return s;
+    }
+};

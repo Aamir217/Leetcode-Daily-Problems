@@ -1,0 +1,57 @@
+// String Matching in an Array
+
+
+Intuition and Approach:
+The goal of this problem is to find all the strings in the words array that are substrings of other strings in the same array.
+
+Step-by-Step Approach:
+Iterate Over All Pairs of Strings:
+Use a nested loop where you compare each string (words[i]) with every other string (words[j]) in the array.
+
+Skip Same Index:
+If i == j (comparing the same string), skip the iteration since a string cannot be a substring of itself.
+
+Check for Substring:
+Use words[j].find(words[i]) to check if words[i] is a substring of words[j]. The find function returns the starting index of words[i] in words[j] if it exists, otherwise it returns string::npos.
+
+Store the Result:
+If words[i] is found in words[j], add it to the result vector and stop further comparisons for words[i] (using break).
+
+Return the Result:
+After completing the iterations, return the result vector containing all substrings.
+
+Complexity Analysis:
+
+Time Complexity:
+Outer Loop: Runs n times (for each string in the array).
+In the worst case, inner Loop Runs up to n times for each string.
+Substring Check (find): Takes up to O(m) the length of words[j] (worst case is linear in the length of the string).
+Therefore, the worst-case time complexity is O(n^2*m)
+
+Space Complexity:
+The result vector stores at most n strings, so the space used by the vector is proportional to the size of the substrings stored.
+No additional data structures are used except for basic variables.
+Hence, the space complexity is O(k), where k is the total length of all substrings stored in the result.
+
+//CODE
+
+class Solution {
+public:
+    vector<string> stringMatching(vector<string> &words) {
+        vector<string> result;
+        int n = words.size();
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (i == j)
+                    continue;
+                if (words[j].find(words[i]) != string::npos) {
+                    result.push_back(words[i]);
+                    break;
+                }
+            }
+        }
+
+        return result;
+    }
+};

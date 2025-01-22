@@ -1,0 +1,82 @@
+// Map of Highest Peak
+
+Intuition
+The problem requires us to compute the shortest distance from every land cell to the nearest water cell. Intuitively, this is a multi-source shortest path problem, where each water cell acts as a starting point (source) and we propagate distances from these sources to all other cells in the grid.
+
+A Breadth-First Search (BFS) is the most suitable algorithm for this problem because it naturally explores all neighboring nodes at the same distance before moving further. This ensures that the first time we assign a height to a land cell, it is the shortest distance to the nearest water cell.
+
+Approach
+
+Initialization:
+Create a height matrix of the same dimensions as the input grid, initialized to -1 for all cells (to indicate unvisited cells).
+Create a queue to perform BFS. Push all water cells (isWater[i][j] == 1) into the queue, and set their corresponding heights to 0 in the height matrix.
+
+BFS Traversal:
+While the queue is not empty:
+Pop the current cell (i, j) from the queue.
+Explore all 4 possible directions (up, down, left, right).
+For each valid neighbor cell (new_i, new_j):
+If it is unvisited (height[new_i][new_j] == -1):
+Set its height to height[i][j] + 1 (distance from the current cell).
+Push the neighbor cell into the queue.
+
+Return the Result:
+Once the BFS completes, the height matrix will contain the shortest distances from each cell to the nearest water cell. Return this matrix.
+
+Time Complexity
+
+Grid Initialization:
+Scanning the grid to find water cells and initialize the height matrix takes O(m × n), where m and n are the dimensions of the grid.
+
+BFS Traversal:
+Each cell is processed exactly once (when it is first dequeued), and each edge (neighbor connection) is also processed exactly once. Therefore, the BFS traversal takes O(m × n).
+
+Overall:
+The total time complexity is O(m × n).
+
+// CODE
+
+class Solution {
+public:
+    vector<vector<int>> dir={{1,0},{0,1},{-1,0},{0,-1}};
+    vector<vector<int>> highestPeak(vector<vector<int>>& isWater) {
+        int m=isWater.size();
+        int n=isWater[0].size();
+        
+        vector<vector<int>> height(m,vector<int>(n,-1));
+        queue<pair<int,int>> que;
+        for(int i=0;i<m;i++)
+        {
+            for(int j=0;j<n;j++)
+            {
+                if(isWater[i][j]==1)
+                {
+                    height[i][j]=0;
+                    que.push({i,j});
+                }
+            }
+        }
+        while(!que.empty())
+        {
+            int N=que.size();
+            while(N--)
+            {
+                auto p =que.front();
+                que.pop();
+                int i=p.first;
+                int j=p.second;
+                for(auto &d:dir)
+                {
+                    int new_i=i+d[0];
+                    int new_j=j+d[1];
+                    if(new_i>=0&&new_i<m&&new_j>=0&&new_j<n&&height[new_i][new_j]==-1)
+                    {
+                        height[new_i][new_j]=height[i][j]+1;
+                        que.push({new_i,new_j});
+                    }
+                }
+            }
+        }
+        return height;
+    }
+};

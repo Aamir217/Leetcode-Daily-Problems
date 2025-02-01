@@ -1,0 +1,35 @@
+// Special Array I
+
+Intuition 🤔
+An array is called special if adjacent elements have alternating parity, meaning even and odd numbers appear consecutively without repetition.
+To determine if an array is special, we need to check if every two consecutive elements follow this alternating pattern.
+
+Approach 🚀
+Base Case: If the array contains only one element, it is automatically special. Return true.
+Iterate through the Array:
+Traverse the array from index 0 to n-2 (since we are comparing adjacent elements).
+For each pair (nums[i], nums[i+1]), check if both numbers are either even or odd:
+If nums[i] % 2 == nums[i+1] % 2, return false (they have the same parity).
+Return true: If we complete the loop without finding a violation, the array is special.
+
+Complexity Analysis ⏳
+Time Complexity:
+O(N), where N is the size of the array. We perform a single pass through the array.
+Space Complexity:
+O(1), as we are using only a few extra variables (no additional data structures).
+
+// CODE
+
+class Solution {
+public:
+    bool isArraySpecial(vector<int>& nums) {
+        if(nums.size()==1)
+            return true;
+        for(int i=0;i<nums.size()-1;i++)
+        {
+            if((nums[i]%2==0&&nums[i+1]%2==0)||(nums[i]%2==1&&nums[i+1]%2==1))
+                return false;
+        }
+        return true;
+    }
+};

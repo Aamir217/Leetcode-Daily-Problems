@@ -1,0 +1,54 @@
+// Clear Digits
+
+Intuition:
+The problem requires removing all digits from the string s while also removing the character immediately before each digit. This can be efficiently handled using a stack data structure. The stack helps us keep track of characters and easily remove the last character when a digit is encountered.
+
+Approach:
+Initialize a stack: Use a stack to store characters from the string.
+
+Iterate through the string:
+
+If the stack is empty, push the current character onto the stack.
+
+If the current character is a digit and the top of the stack is a letter, pop the top character from the stack (removing the letter before the digit).
+
+Otherwise, push the current character onto the stack.
+
+Construct the result: After processing the entire string, the stack will contain the desired characters in reverse order. Pop elements from the stack and construct the final string in the correct order.
+
+Return the result: The constructed string is the final answer.
+
+Time Complexity:
+O(n): The algorithm processes each character in the string exactly once. Pushing and popping operations on the stack are O(1) each, so the overall time complexity is linear with respect to the length of the string s.
+
+Space Complexity:
+O(n): In the worst case, the stack could store all characters of the string if there are no digits to remove. Thus, the space complexity is linear with respect to the length of the string s.
+
+// CODE
+
+class Solution {
+public:
+    string clearDigits(string s) {
+        stack<char> st;
+        for(int i=0;i<s.length();i++)
+        {
+            if(st.empty())
+                st.push(s[i]);
+            else
+            {
+                if(isdigit(s[i])&&isalpha(st.top()))
+                    st.pop();
+                else
+                    st.push(s[i]);
+            }
+        }
+        string ans(st.size(),' ');
+        int k=st.size()-1;
+        while(!st.empty())
+        {
+            ans[k--]=st.top();
+            st.pop();
+        }
+        return ans;
+    }
+};

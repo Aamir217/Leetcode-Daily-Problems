@@ -1,0 +1,36 @@
+// Find Numbers with Even Number of Digits
+
+Intuition: Count numbers in nums with an even number of digits by calculating digits per number.
+
+Approach:
+
+Initialize count = 0.
+For each number, count digits by dividing by 10 until 0.
+If digit count is even, increment count.
+Return count.
+Complexity:
+
+Time: O(n * d), where n is array length, d is max digits (log₁₀ of largest number).
+Space: O(1).
+
+// CODE
+
+class Solution {
+public:
+    int findNumbers(vector<int>& nums) {
+        int count=0;
+        for(auto &i:nums)
+        {
+            int D_count=0;
+            int x=i;
+            while(x!=0)
+            {
+                D_count++;
+                x=x/10;
+            }
+            if(D_count%2==0)
+                count++;
+        }
+        return count;
+    }
+};

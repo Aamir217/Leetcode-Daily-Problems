@@ -1,0 +1,35 @@
+// Finding 3-Digit Even Numbers
+
+Intuition: Form three-digit even numbers (100–999) using digits from the input, respecting their frequencies.
+
+Approach:
+
+Count frequency of each digit (0–9).
+Iterate over a (1–9), b (0–9), c (0, 2, 4, 6, 8) to form a*100 + b*10 + c.
+Check if digit counts allow the number (e.g., count[a] >0, count[b] > (b==a), count[c] > (c==a)+(c==b)).
+Collect valid numbers in result vector.
+Time Complexity: O(n) (frequency counting dominates; loop is constant).
+Space Complexity: O(1) .
+
+//CODE
+
+class Solution {
+ public:
+  vector<int> findEvenNumbers(vector<int>& digits) {
+    vector<int> ans;
+    vector<int> count(10);
+
+    for (const int digit : digits)
+      ++count[digit];
+
+    // Try to construct `abc`.
+    for (int a = 1; a <= 9; ++a)
+      for (int b = 0; b <= 9; ++b)
+        for (int c = 0; c <= 8; c += 2)
+          if (count[a] > 0 && count[b] > (b == a) &&
+              count[c] > (c == a) + (c == b))
+            ans.push_back(a * 100 + b * 10 + c);
+
+    return ans;
+  }
+};

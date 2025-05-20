@@ -1,0 +1,70 @@
+// Zero Array Transformations I
+
+Problem Intuition
+You are given:
+A vector nums representing an array of initial values.
+
+A list of queries, where each query [l, r] indicates a range to decrease every element in that range by 1.
+
+You need to check if, after applying all these range decrements, all elements in nums become less than or equal to zero.
+
+Approach
+1. Range Updates with Prefix Sum Trick
+Instead of naively decrementing each value in every range (which takes O(n*q) time), we use the difference array approach to apply range updates in O(1) time per query:
+
+Create a helper array dec[] (initialized with 0).
+
+For each query [l, r], do:
+
+dec[l] += 1 → mark the start of decrement
+
+dec[r+1] -= 1 → mark the end of decrement (only if r+1 is within bounds)
+
+2. Apply Decrement to Original Array
+Convert dec[] to prefix sum form to get how many times each index should be decremented.
+
+For each index i:
+
+Subtract dec[i] from nums[i]
+
+If any result is still positive → return false
+
+3. Return Final Result
+If all values are ≤ 0 after processing → return true
+
+Time and Space Complexity
+Time Complexity: O(n + q)
+q = number of queries
+
+n = size of nums
+
+O(q) to process all queries (with difference array technique)
+
+O(n) to compute prefix sum and check results
+
+Space Complexity: O(n)
+For the dec[] array of size n
+
+// CODE
+
+class Solution {
+public:
+    bool isZeroArray(vector<int>& nums, vector<vector<int>>& queries) {
+        vector<int> dec(nums.size(),0);
+        for(int i=0;i<queries.size();i++)
+        {
+            dec[queries[i][0]]+=1;
+            if(queries[i][1]+1<nums.size())
+                dec[queries[i][1]+1]-=1;
+        }
+        int sum=0;
+        for(int i=0;i<nums.size();i++)
+        {
+            dec[i]+=sum;
+            sum=dec[i];
+            if(nums[i]-dec[i]>0)
+                return false;
+        }
+        return true;
+    }
+};

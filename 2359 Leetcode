@@ -1,0 +1,89 @@
+// Find Closest Node to Given Two Nodes
+
+🔍 Problem Intuition:
+You're given a directed graph represented by the edges array, where edges[i] is the node that node i points to, or -1 if it doesn't point to any node.
+
+Given two nodes (node1 and node2), you need to find a node which:
+
+Is reachable from both node1 and node2.
+
+Has the minimum maximum distance from both nodes.
+
+In case of tie (same max distance), return the node with the smallest index.
+
+🧠 Approach:
+BFS from node1 and node2 separately:
+
+Since each node has at most one outgoing edge (like a chain or tree), you can do BFS starting from each node and store the shortest distance to each node from node1 and node2.
+
+Distance arrays:
+
+node1_Dist[i]: stores distance from node1 to node i.
+
+node2_Dist[i]: stores distance from node2 to node i.
+
+Find the minimum of the maximum distances:
+
+For each node i, if it is reachable from both nodes (i.e., distances not INT_MAX), check the maximum of the two distances.
+
+Keep track of the minimum such maximum, and record the node.
+
+🧮 Time and Space Complexity:
+Let n = edges.size():
+
+✅ Time Complexity:
+BFS from node1: O(n)
+
+BFS from node2: O(n)
+
+Loop through all nodes to find best answer: O(n)
+
+Total: O(n)
+
+✅ Space Complexity:
+node1_Dist, node2_Dist, visited: O(n)
+
+Queue for BFS: O(n)
+
+Total: O(n)
+
+//CODE
+
+class Solution {
+public:
+    vector<int> bfs(vector<int>& edges,int node)
+    {
+        vector<int> ans(edges.size(),INT_MAX);
+        vector<bool> visited(edges.size(),false);
+        queue<int> pq;
+        pq.push(node);
+        ans[node]=0;
+        while(!pq.empty())
+        {
+            int curr_node=pq.front();
+            pq.pop();
+            visited[curr_node]=true;
+            if(edges[curr_node]!=-1&&!visited[edges[curr_node]])
+            {
+                ans[edges[curr_node]]=min(ans[edges[curr_node]],ans[curr_node]+1);
+                pq.push(edges[curr_node]);
+            }
+        }
+        return ans;
+    }
+    int closestMeetingNode(vector<int>& edges, int node1, int node2) {
+        vector<int> node1_Dist=bfs(edges,node1);
+        vector<int> node2_Dist=bfs(edges,node2);
+        int ans=INT_MAX;
+        int node_val=-1;
+        for(int i=0;i<edges.size();i++)
+        {
+            if(ans>max(node1_Dist[i],node2_Dist[i]))
+            {
+                ans=max(node1_Dist[i],node2_Dist[i]);
+                node_val=i;
+            }
+        }
+        return node_val;
+    }
+};

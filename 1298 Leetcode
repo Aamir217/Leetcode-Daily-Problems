@@ -1,0 +1,126 @@
+// Maximum Candies You Can Get from Boxes
+
+✅ Problem Summary:
+You're given:
+
+status[i] = 1 if box i is open, otherwise 0.
+
+candies[i] is the number of candies in box i.
+
+keys[i] contains the keys in box i.
+
+containedBoxes[i] contains boxes within box i.
+
+initialBoxes is the list of boxes you initially have.
+
+You can only open a box if:
+
+You already have the box AND
+
+The box is unlocked (i.e., status[i] == 1).
+
+Your goal: Maximize the number of candies you can collect by exploring boxes, collecting keys, and opening new boxes.
+
+💡 Intuition:
+This is a graph traversal + state unlocking problem. You can think of each box as a node and the unlocking process as "activating" that node.
+
+You traverse the boxes BFS-style:
+
+If you find a key, update the status of that box.
+
+If you find a new box, store it.
+
+If you can open a box (you have it + it's unlocked + not visited), collect candies and continue.
+
+🧭 Approach:
+Use a queue box for boxes we can currently open and explore.
+
+Use a set foundBoxes to track all the boxes we have in possession (whether open or closed).
+
+Use a visited[] array to ensure we don’t revisit a box.
+
+First, for all initialBoxes:
+
+If already open, add it to queue and collect candies.
+
+Otherwise, just record that you have the box.
+
+While there are boxes in the queue:
+
+Pop a box and:
+
+Add its contained boxes to foundBoxes.
+
+If any contained box is now open (status = 1), and not yet visited, enqueue it.
+
+Add its keys — if any key opens a box you already have and haven’t visited, enqueue it.
+
+Continue until all reachable boxes are visited.
+
+🔍 Complexity:
+Let n be the number of total boxes.
+
+🕒 Time Complexity:
+O(n + K + C)
+Where:
+
+n is number of boxes,
+
+K is total number of keys,
+
+C is total number of containedBoxes across all boxes.
+
+In the worst case, you touch every box once and process its keys and contained boxes.
+
+🧠 Space Complexity:
+O(n)
+
+For visited, status, foundBoxes, and box queue.
+
+// CODE
+
+class Solution {
+public:
+    int maxCandies(vector<int>& status, vector<int>& candies, vector<vector<int>>& keys, vector<vector<int>>& containedBoxes, vector<int>& initialBoxes) {
+        queue<int> box;
+        unordered_set<int> foundBoxes;
+        int ans=0;
+        vector<bool> visited(status.size(),false);
+        for(int i=0;i<initialBoxes.size();i++)
+        {
+            foundBoxes.insert(initialBoxes[i]);
+            if(status[initialBoxes[i]]==1)
+            {
+                box.push(initialBoxes[i]);
+                visited[initialBoxes[i]]=true;
+                ans+=candies[initialBoxes[i]];
+            }
+        }
+        while(!box.empty())
+        {
+            int currBox=box.front();
+            box.pop();
+            for(auto cBox:containedBoxes[currBox])
+            {
+                foundBoxes.insert(cBox);
+                if(status[cBox]==1&&!visited[cBox])
+                {
+                    box.push(cBox);
+                    visited[cBox]=true;
+                    ans+=candies[cBox];
+                }
+            }
+            for(auto key:keys[currBox])
+            {
+                status[key]=1;
+                if(foundBoxes.count(key)&&!visited[key])
+                {
+                    box.push(key);
+                    visited[key]=true;
+                    ans+=candies[key];
+                }
+            }
+        }
+        return ans;
+    }
+};
